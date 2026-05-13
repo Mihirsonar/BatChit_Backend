@@ -3,7 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './Routes/auth.js';
-import conversationRoutes from './Routes/Conversation.js';  
+import conversationRoutes from './Routes/Conversation.js';
 import messageRoutes from './Routes/Message.js';
 import { connectDB } from './Config/db.js';
 
@@ -17,28 +17,34 @@ dotenv.config();
 const port = process.env.PORT || 5000;
 const app = express();
 
+app.use(
+  cors({
+    origin: ["http://localhost:5173",
+            'https://bat-chit-frontend.vercel.app'],
+            credentials: true,
+  })
+);
 
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const start = async () => {
   try {
-    await connectDB(); 
+    await connectDB();
 
-app.use('/api/user', authRoutes);
-app.use('/api/user', userRoutes);
+    app.use('/api/user', authRoutes);
+    app.use('/api/user', userRoutes);
 
     app.use('/api/conversation', conversationRoutes);
     app.use('/api/message', messageRoutes);
 
     const server = http.createServer(app);
+
     initSocket(server);
 
-  server.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
-
+    server.listen(port, () => {
+      console.log(`Server running on port ${port}`);
+    });
   } catch (err) {
     console.error('Failed to start server:', err);
     process.exit(1);
