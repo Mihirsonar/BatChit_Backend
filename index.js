@@ -26,14 +26,11 @@ const start = async () => {
   try {
     await connectDB(); 
 
-    app.use('/api/auth/user', authRoutes);
-    app.use('/api/user', userRoutes);
+app.use('/api/user', authRoutes);
+app.use('/api/user', userRoutes);
+
     app.use('/api/conversation', conversationRoutes);
     app.use('/api/message', messageRoutes);
-
-    // app.listen(port, () => {
-    //   console.log(`Server is running on port: ${port}`);
-    // });
 
     const server = http.createServer(app);
     initSocket(server);
